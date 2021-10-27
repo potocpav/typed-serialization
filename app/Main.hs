@@ -5,9 +5,11 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
+-- | Example usage of the TypedSerialization library.
+
 module Main where
 
-import MyLib (TypedSerialize(..), Command, Program, command, program, eval, showTypes)
+import TypedSerialization (TypedSerialize(..), Command, Program, command, program, eval, showTypes)
 import Text.Read (readMaybe)
 
 
@@ -26,11 +28,13 @@ instance TypedSerialize Bool String String where
 type CommandT = Command String String
 type ProgramT = Program String String
 
+
 main :: IO ()
 main = do
   let
     -- data will be passed through Strings, but we can still work with Haskell values
-    -- without worrying about serialization failures.
+    -- without worrying about serialization failures. Ordinary Haskell functions can be lifted
+    -- to `Command`s.
 
     equal :: Int -> CommandT
     equal n = command (== n)
