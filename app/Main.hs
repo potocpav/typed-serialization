@@ -1,28 +1,12 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE LambdaCase #-}
-
--- | Example usage of the TypedSerialization library.
-
+-- | Example usage of the Serializable library.
 module Main where
 
-import TypedSerialization (TypedSerialize(..), Command, Program, command, program, eval, showTypes)
-import Text.Read (readMaybe)
-
-
-instance TypedSerialize Int String where
-  serialize = show
-  deserialize = readMaybe
-
-instance TypedSerialize Bool String where
-  serialize = show
-  deserialize = readMaybe
+import Serializable
 
 
 main :: IO ()
 main = do
   let
-
     -- data will be passed through Strings, but we can still work with Haskell values
     -- without worrying about serialization failures. Ordinary Haskell functions can be lifted
     -- to `Command`s.
