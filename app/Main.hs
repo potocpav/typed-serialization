@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE LambdaCase #-}
 
 -- | Example usage of the TypedSerialization library.
 
@@ -9,40 +10,31 @@ import TypedSerialization (TypedSerialize(..), Command, Program, command, progra
 import Text.Read (readMaybe)
 
 
-data TypeRep = Int' | Bool' deriving (Show, Eq)
-
-
-instance TypedSerialize Int String TypeRep where
+instance TypedSerialize Int String where
   serialize = show
   deserialize = readMaybe
-  type_ = Int'
 
-instance TypedSerialize Bool String TypeRep where
+instance TypedSerialize Bool String where
   serialize = show
   deserialize = readMaybe
-  type_ = Bool'
-
-
--- we will serialize both types and values to Strings
-type CommandT = Command String TypeRep
-type ProgramT = Program String TypeRep
 
 
 main :: IO ()
 main = do
   let
+
     -- data will be passed through Strings, but we can still work with Haskell values
     -- without worrying about serialization failures. Ordinary Haskell functions can be lifted
     -- to `Command`s.
 
-    equal :: Int -> CommandT
+    equal :: Int -> Command String
     equal n = command (== n)
 
-    notBool :: CommandT
+    notBool :: Command String
     notBool = command not
 
   -- construct and typecheck a program.
-  notFiveProg <- case program [equal 5, notBool] :: Maybe (ProgramT Int Bool) of
+  notFiveProg <- case program [equal 5, notBool] :: Maybe (Program String Int Bool) of
     Just p -> pure p
     Nothing -> error "Type mismatch"
 
