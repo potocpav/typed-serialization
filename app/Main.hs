@@ -9,20 +9,23 @@ import TypedSerialization (TypedSerialize(..), Command, Program, command, progra
 import Text.Read (readMaybe)
 
 
-instance TypedSerialize Int String String where
-  serialize = show
-  deserialize = readMaybe
-  type_ = "Int"
+data TypeRep = Int' | Bool' deriving (Show, Eq)
 
-instance TypedSerialize Bool String String where
+
+instance TypedSerialize Int String TypeRep where
   serialize = show
   deserialize = readMaybe
-  type_ = "Bool"
+  type_ = Int'
+
+instance TypedSerialize Bool String TypeRep where
+  serialize = show
+  deserialize = readMaybe
+  type_ = Bool'
 
 
 -- we will serialize both types and values to Strings
-type CommandT = Command String String
-type ProgramT = Program String String
+type CommandT = Command String TypeRep
+type ProgramT = Program String TypeRep
 
 
 main :: IO ()
